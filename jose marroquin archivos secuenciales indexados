@@ -1,0 +1,180 @@
+//============================================================================
+// Name        : archivos.cpp
+// Author      : Jose Fernando Marroquin Rosa
+// Version     :2016
+// Copyright   : 
+// Description : archivos secuenciales indexados, ing. en sistemas tercer semestre
+//============================================================================
+
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
+#include <cstdio>
+#include <conio.h>
+
+using namespace std;
+
+// INICIA DECLARACION DE ESTRUCTURAS
+
+	struct Jugadores {
+
+	int afiliacion;
+ 	char nombre[30];
+	int edad;
+	char equipo[20]; };
+
+	struct index{
+
+	int afiliacion;
+ 	int posicion;	};
+
+int main(){
+
+int opcion, numero;
+Jugadores futbolista, auxiliarJ;
+index indice, auxiliarI;	//variable para almacenar index(indice)
+//INICIA DO WHILE
+do{
+    void clrscr(void);
+ofstream dat("datos.txt", ios::binary | ios::app);
+ofstream ind("index.txt", ios::binary | ios::app);
+ifstream indic("index.txt", ios::binary);
+
+cout<<"~~~     LIGAR MAYOR NACIONAL DE FUTBOL     ~~~"<<endl;
+cout<<"Registro de Futbolistas"<<endl<<endl;
+
+cout<<"1. Ingresar datos del futbolista"<<endl;
+cout<<"2. Buscar datos de un futbolista"<<endl;
+cout<<"3. Borrar registros de futbolistas"<<endl;
+cout<<"4. Salir del programa"<<endl;
+cout<<endl<<"Seleccione la opcion que desee: ";
+cin>>opcion;
+cout<<endl;
+
+if(opcion>0 && opcion<4){
+	switch(opcion){
+//INICIO DE OPERACIONES DE ARCHIVOS SECUENCIALES INDEXADOS
+	case 1: 				
+		if(!dat && !ind){								
+		cout<<"Error al abrir archivo"<<endl;
+		}else{								
+		cout<<"Ingrese carnet: ";
+		cin>>futbolista.afiliacion;			
+		cout<<endl;
+		while(!indic.eof()){
+	indic.read((char*) &auxiliarI, sizeof(struct index));
+	if (futbolista.afiliacion==auxiliarI.afiliacion){
+		cout<<"El archivo ya existe, Posicion: "<<auxiliarI.posicion;
+		cout<<endl;
+		numero=10;
+	}
+		}
+	indic.close();
+		if(numero!=10){
+		cout<<"Ingrese nombre: ";
+		cin>>futbolista.nombre;
+		cout<<endl;
+		cout<<"Ingrese edad: ";
+		cin>>futbolista.edad;
+		cout<<endl;
+		cout<<"Ingrese equipo: ";
+		cin>>futbolista.equipo;
+		cout<<endl;
+		dat.write((char*) &futbolista, sizeof(struct Jugadores)); 															
+		dat.seekp(0, ios::end);		
+		indice.afiliacion=futbolista.afiliacion;			
+		indice.posicion=dat.tellp()/sizeof(struct Jugadores); 														
+		ind.write((char*) &indice, sizeof(struct index));
+		cout<<"Guardado en posicion: "<<"["<<indice.posicion<<"]"<<endl;				
+		dat.close();
+		ind.close();	}	
+		}
+		return 0; break;	
+	case 2:
+
+	int buscar;
+
+	cout<<"Escriba carnet de alumno a buscar: ";
+	cin>>buscar;
+
+	while(!indic.eof()){	
+
+	indic.read((char*) &auxiliarI, sizeof(struct index));	
+
+	if (buscar==auxiliarI.afiliacion){	
+
+	cout<<endl<<"POSICION: "<<auxiliarI.posicion; 
+											
+	cout<<endl<<endl;						
+
+	ifstream dato("datos.txt", ios::binary);
+
+	numero=auxiliarI.posicion-1;
+
+	dato.seekg(sizeof(struct Jugadores)*numero, ios::beg);
+	dato.read((char*) &auxiliarJ, sizeof(struct Jugadores));
+
+	cout<<"numero de afiliacion:  "<<auxiliarJ.afiliacion<<endl;
+	cout<<"Nombre del futbolista:  "<<auxiliarJ.nombre<<endl;
+	cout<<"Edad:    "<<auxiliarJ.edad<<endl;
+	cout<<"equipo: "<<auxiliarJ.equipo<<endl;
+
+	dato.close();
+
+	return 0;
+
+	}
+		}
+
+	indic.close(); 
+
+	break;	
+
+
+case 3:
+	numero=0;
+	if(numero==0){
+		ifstream eliminar("datos.txt", ios::binary);
+		ifstream elim_ind("index.txt", ios::binary);
+		ofstream temporal("temp.txt", ios::binary | ios::out);
+		ofstream temp_ind("tempi.txt", ios::binary | ios::out);
+	if(!eliminar || !elim_ind){
+		cout<<"Error al abrir el archivo"<<endl;
+	}else{
+		cout<<"Ingrese el numero de carnet del alumno que desea borrar: ";
+		cin>>opcion;
+	while(!eliminar.eof()){
+	eliminar.read((char*) &auxiliarJ, sizeof(struct Jugadores));
+	if(auxiliarJ.afiliacion==opcion){
+		cout<<"El archivo se ha eliminado de datos"<<endl;
+	}else{
+	temporal.write((char*) &auxiliarJ, sizeof(struct Jugadores));
+	}
+		}
+	while(!elim_ind.eof()){
+	elim_ind.read((char*) &auxiliarI, sizeof(struct index));
+	if(auxiliarI.afiliacion==opcion){
+		cout<<"El archivo se ha eliminado de indice"<<endl;
+	}else{
+	temp_ind.write((char*) &auxiliarI, sizeof(struct index));
+	}
+		}
+			}
+	eliminar.close();
+	temporal.close();
+	elim_ind.close();
+	temp_ind.close();
+
+	 }
+	remove("datos.txt");
+	remove("index.txt");
+	rename("temp.txt", "datos.txt");
+	rename("tempi.txt", "index.txt");
+	return 0; break;
+default: break;
+	}//TERMINA SWICTH DE CASOS
+		}
+	} while(opcion>0 && opcion!=4);
+//TERMINA DO WHILE
+  return 0;
+}
