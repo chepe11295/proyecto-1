@@ -58,7 +58,7 @@ if(opcion>0 && opcion<4){
 		if(!dat && !ind){								
 		cout<<"Error al abrir archivo"<<endl;
 		}else{								
-		cout<<"Ingrese carnet: ";
+		cout<<"Ingrese numero de afiliacion: ";
 		cin>>futbolista.afiliacion;			
 		cout<<endl;
 		while(!indic.eof()){
@@ -94,7 +94,7 @@ if(opcion>0 && opcion<4){
 
 	int buscar;
 
-	cout<<"Escriba carnet de alumno a buscar: ";
+	cout<<"Escriba no. de afiliacion del jugador a buscar: ";
 	cin>>buscar;
 
 	while(!indic.eof()){	
